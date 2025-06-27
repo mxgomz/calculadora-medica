@@ -165,7 +165,7 @@
       document.getElementById('resultado').innerText = `Resultado = $${total}`;
     }
 
-    // Prevenir zoom ao dar double tap no Safari (iOS)
+    // Prevenir zoom ao dar double tap no Safari (em qualquer lugar da tela)
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function (event) {
       let now = (new Date()).getTime();
@@ -175,6 +175,18 @@
       lastTouchEnd = now;
     }, false);
 
+    // Prevenir zoom por duplo toque especificamente nos botões
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('touchend', function (e) {
+        const now = new Date().getTime();
+        if (btn.lastTap && (now - btn.lastTap) < 300) {
+          e.preventDefault();
+        }
+        btn.lastTap = now;
+      });
+    });
+
+    // Service Worker (caso esteja usando PWA)
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('service-worker.js');
     }
